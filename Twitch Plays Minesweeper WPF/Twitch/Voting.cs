@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using System.Windows.Controls;
+using TPM.Logic.Game;
 using Twitch_Plays_Minesweeper.Game;
 
 namespace Twitch_Plays_Minesweeper_WPF.Twitch
@@ -20,7 +20,7 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
         private Panel votingPanel;
         private Label countdownLabel;
 
-        private Dictionary<MainGame.Action, Votes> votes = new Dictionary<MainGame.Action, Votes>();
+        private Dictionary<Action, Votes> votes = new Dictionary<Action, Votes>();
 
         public Voting(MainGame game, Panel votingPanel, Label countdownLabel)
         {
@@ -55,7 +55,7 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
             countdownLabel.Content = string.Format("{0} second{1}", countdownTimer, countdownTimer == 1 ? "" : "s");
         }
 
-        public void AddVote(MainGame.Action action)
+        public void AddVote(Action action)
         {
             var vote = from v in votes
                        where v.Key == action
@@ -63,7 +63,7 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
 
             if (vote.Count() > 0)
             {
-                KeyValuePair<MainGame.Action, Votes> actVote = vote.First();
+                KeyValuePair<Action, Votes> actVote = vote.First();
 
                 actVote.Value.AddVote();
 
@@ -86,13 +86,13 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
 
             int index = 0;
 
-            foreach (KeyValuePair<MainGame.Action, Votes> vote in sorted)
+            foreach (KeyValuePair<Action, Votes> vote in sorted)
             {
                 vote.Value.AddToPanel(votingPanel, index++);
             }
         }
 
-        private IOrderedEnumerable<KeyValuePair<MainGame.Action, Votes>> GetSortedVotes()
+        private IOrderedEnumerable<KeyValuePair<Action, Votes>> GetSortedVotes()
         {
             var sorted = from v in votes
                          orderby v.Value._Votes descending

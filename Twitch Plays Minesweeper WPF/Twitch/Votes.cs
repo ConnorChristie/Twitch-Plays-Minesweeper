@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using TPM.Logic.Game;
 using Twitch_Plays_Minesweeper.Game;
 
 namespace Twitch_Plays_Minesweeper_WPF.Twitch
@@ -20,7 +14,7 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
 
         public int _Votes { get; private set; }
 
-        public Votes(int index, MainGame.Action action)
+        public Votes(int index, Action action)
         {
             Label[] labels = GetVoteLabels(this.index = index, action.Title, 1);
 

@@ -67,8 +67,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Game\Board.cs" />
-    <Compile Include="Game\Cell.cs" />
     <Compile Include="Game\MainGame.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -154,6 +152,10 @@
     <ProjectReference Include="..\ChatSharp\ChatSharp.csproj">
       <Project>{4033affa-bea3-4bdf-84ea-59a23360fd36}</Project>
       <Name>ChatSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TPM.Logic\TPM.Logic.csproj">
+      <Project>{9e82ff7a-5403-4d19-998c-31871be39c41}</Project>
+      <Name>TPM.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -55,6 +55,20 @@
     <Compile Include="MinesweeperGenerate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatSharp\ChatSharp.csproj">
+      <Project>{4033affa-bea3-4bdf-84ea-59a23360fd36}</Project>
+      <Name>ChatSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TPM.Logic\TPM.Logic.csproj">
+      <Project>{9e82ff7a-5403-4d19-998c-31871be39c41}</Project>
+      <Name>TPM.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Twitch Plays Minesweeper WPF\TPM.Win.csproj">
+      <Project>{a9c418d3-9f84-404f-b267-90520cadda96}</Project>
+      <Name>TPM.Win</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

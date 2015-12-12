@@ -2,37 +2,34 @@
 using System.Drawing;
 using System.Windows.Controls;
 
-namespace Twitch_Plays_Minesweeper.Game
+namespace TPM.Logic.Game
 {
-    class Board
+    public class Board
     {
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public int OffsetX = 1;
-        public int OffsetY = 1;
+        public Grid CellGrid { get; set; }
+        public Point CursorPos { get; private set; }
 
         public double CellSize { get; set; }
 
-        private Cell[,] Cells;
-        private Random random = new Random();
+        public int OffsetX = 1;
+        public int OffsetY = 1;
 
-        public Grid CellGrid { get; set; }
-        private Point CursorPos = new Point(0, 0);
+        private Cell[,] cells;
+
+        private Random random = new Random();
 
         private int[] bombsX;
         private int[] bombsY;
 
-        public Board(int Width, int Height)
-        {
-            this.Width = Width;
-            this.Height = Height;
-
-            Cells = new Cell[Width, Height];
-        }
-
         public void CreateBoard()
         {
+            cells = new Cell[Width, Height];
+
+            CursorPos = new Point(0, 0);
+
             CellGrid.Width = Width * CellSize + OffsetX;
             CellGrid.Height = Height * CellSize + OffsetY;
 
@@ -40,7 +37,7 @@ namespace Twitch_Plays_Minesweeper.Game
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    Cells[x, y] = CreateCell(x, y);
+                    cells[x, y] = CreateCell(x, y);
                 }
             }
 
@@ -51,7 +48,7 @@ namespace Twitch_Plays_Minesweeper.Game
         {
             bombsX = new int[bombs];
             bombsY = new int[bombs];
-            
+
             for (int i = 0; i < bombs; i++)
             {
                 SetRandomBomb();
@@ -93,7 +90,7 @@ namespace Twitch_Plays_Minesweeper.Game
             }
         }
 
-        internal void ShowEmptyAround(Cell cell)
+        public void ShowEmptyAround(Cell cell)
         {
             if (cell.IsBomb) return;
 
@@ -120,7 +117,7 @@ namespace Twitch_Plays_Minesweeper.Game
             }
         }
 
-        internal void ShowEverything()
+        public void ShowEverything()
         {
             for (int x = 0; x < Width; x++)
             {
@@ -133,7 +130,9 @@ namespace Twitch_Plays_Minesweeper.Game
 
         private Cell CreateCell(int x, int y)
         {
-            Cell cell = new Cell(this, x, y);
+            Cell cell = new Cell(this) { X = x, Y = y };
+
+            cell.InstantiateCell();
 
             CellGrid.Children.Add(cell.CellImage);
 
@@ -152,24 +151,40 @@ namespace Twitch_Plays_Minesweeper.Game
 
             return GetCell(x, y);
         }
-        
+
         public Cell GetCell(int x, int y)
         {
             if (x >= 0 && x < Width && y >= 0 && y < Height)
             {
-                return Cells[x, y];
+                return cells[x, y];
             }
 
             return null;
         }
+        
+        public bool GetCellRelativeTo(int x, int y, out Cell producedCell)
+        {
+            Cell cell = GetCell(x, y);
 
-        public void MoveCursor(MainGame.Action key)
+            if (cell.IsClickable())
+            {
+                producedCell = cell;
+
+                return true;
+            }
+
+            producedCell = null;
+
+            return false;
+        }
+
+        public void MoveCursor(Action key)
         {
             Cell cell = null;
 
             switch (key.Key)
             {
-                case MainGame.Key.NEXT:
+                case Key.NEXT:
                     int refX = CursorPos.X;
                     int refY = CursorPos.Y;
 
@@ -178,7 +193,7 @@ namespace Twitch_Plays_Minesweeper.Game
                         for (int x = refX + 1; x < Width; x++)
                         {
                             int yy = y >= Height ? y - Height : y;
-                            
+
                             cell = GetCell(x, yy);
 
                             if (cell.IsClickable()) goto Finished;
@@ -189,112 +204,58 @@ namespace Twitch_Plays_Minesweeper.Game
                     }
 
                     Finished: break;
-                case MainGame.Key.UP:
-                    for (int i = CursorPos.Y - 1; i >= 0; i--)
-                    {
-                        cell = GetCell(CursorPos.X, i);
-
-                        if (cell.IsClickable()) break;
-                        else cell = null;
-                    }
+                case Key.UP:
+                    cell = key.Act.Invoke(this);
 
                     break;
-                case MainGame.Key.DOWN:
+                case Key.DOWN:
                     for (int i = CursorPos.Y + 1; i < Height; i++)
-                    {
-                        cell = GetCell(CursorPos.X, i);
-
-                        if (cell.IsClickable()) break;
-                        else cell = null;
-                    }
+                        if (GetCellRelativeTo(CursorPos.X, i, out cell)) break;
 
                     break;
-                case MainGame.Key.LEFT:
+                case Key.LEFT:
                     for (int i = CursorPos.X - 1; i >= 0; i--)
-                    {
-                        cell = GetCell(i, CursorPos.Y);
-
-                        if (cell.IsClickable()) break;
-                        else cell = null;
-                    }
+                        if (GetCellRelativeTo(i, CursorPos.Y, out cell)) break;
 
                     break;
-                case MainGame.Key.RIGHT:
+                case Key.RIGHT:
                     for (int i = CursorPos.X + 1; i < Width; i++)
-                    {
-                        cell = GetCell(i, CursorPos.Y);
-
-                        if (cell.IsClickable()) break;
-                        else cell = null;
-                    }
+                        if (GetCellRelativeTo(i, CursorPos.Y, out cell)) break;
 
                     break;
-                case MainGame.Key.UP_LEFT:
+                case Key.UP_LEFT:
                     for (int xy = 1; xy < Math.Min(CursorPos.X + 1, CursorPos.Y + 1); xy++)
-                    {
-                        cell = GetCell(CursorPos.X - xy, CursorPos.Y - xy);
-
-                        if (cell != null)
-                        {
-                            if (cell.IsClickable()) break;
-                            else cell = null;
-                        }
-                    }
+                        if (GetCellRelativeTo(CursorPos.X - xy, CursorPos.Y - xy, out cell)) break;
 
                     break;
-                case MainGame.Key.UP_RIGHT:
+                case Key.UP_RIGHT:
                     for (int xy = 1; xy < Math.Min(Width - CursorPos.X, CursorPos.Y + 1); xy++)
-                    {
-                        cell = GetCell(CursorPos.X + xy, CursorPos.Y - xy);
-
-                        if (cell != null)
-                        {
-                            if (cell.IsClickable()) break;
-                            else cell = null;
-                        }
-                    }
+                        if (GetCellRelativeTo(CursorPos.X + xy, CursorPos.Y - xy, out cell)) break;
 
                     break;
-                case MainGame.Key.DOWN_LEFT:
+                case Key.DOWN_LEFT:
                     for (int xy = 1; xy < Math.Min(CursorPos.X + 1, Height - CursorPos.Y); xy++)
-                    {
-                        cell = GetCell(CursorPos.X - xy, CursorPos.Y + xy);
-
-                        if (cell != null)
-                        {
-                            if (cell.IsClickable()) break;
-                            else cell = null;
-                        }
-                    }
+                        if (GetCellRelativeTo(CursorPos.X - xy, CursorPos.Y + xy, out cell)) break;
 
                     break;
-                case MainGame.Key.DOWN_RIGHT:
+                case Key.DOWN_RIGHT:
                     for (int xy = 1; xy < Math.Min(Width - CursorPos.X, Height - CursorPos.Y); xy++)
-                    {
-                        cell = GetCell(CursorPos.X + xy, CursorPos.Y + xy);
-
-                        if (cell != null)
-                        {
-                            if (cell.IsClickable()) break;
-                            else cell = null;
-                        }
-                    }
+                        if (GetCellRelativeTo(CursorPos.X + xy, CursorPos.Y + xy, out cell)) break;
 
                     break;
             }
-            
+
             if (cell != null)
             {
                 GetCell(CursorPos).Hover(false);
-                
-                CursorPos.X = cell.X;
-                CursorPos.Y = cell.Y;
+
+                CursorPos = new Point(cell.X, cell.Y);
 
                 cell.Hover(true);
             }
         }
 
-        internal void ClickCell()
+        public void ClickCell()
         {
             Cell cell = GetCell(CursorPos);
 
@@ -304,12 +265,12 @@ namespace Twitch_Plays_Minesweeper.Game
                 {
                     //Move to next available cell
 
-                    MoveCursor(MainGame.Action.NEXT);
+                    MoveCursor(Action.NEXT);
                 }
             }
         }
 
-        internal void MarkCell(bool flag, bool normal)
+        public void MarkCell(bool flag, bool normal)
         {
             Cell cell = GetCell(CursorPos);
 

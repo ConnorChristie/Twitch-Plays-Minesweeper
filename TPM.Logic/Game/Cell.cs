@@ -1,44 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Twitch_Plays_Minesweeper.Game;
-using Twitch_Plays_Minesweeper_WPF;
 
-namespace Twitch_Plays_Minesweeper
+namespace TPM.Logic.Game
 {
-    class Cell
+    public class Cell
     {
-        public System.Windows.Controls.Image CellImage { get; }
+        public System.Windows.Controls.Image CellImage { get; private set; }
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
-
+        public int X { get; set; }
+        public int Y { get; set; }
+        
         public int NextTo { get; private set; }
         public bool IsBomb { get; set; }
 
-        private bool IsHovering = false;
+        private bool isHovering = false;
 
         private Board board;
 
-        private State showState = State.NORMAL;
-
         private State state = State.BOMBS[0];
+
+        private State showState = State.NORMAL;
         private State prevState = State.NORMAL;
 
-        public Cell(Board board, int x, int y)
+        public Cell(Board board)
         {
             this.board = board;
+        }
 
-            X = x;
-            Y = y;
-
-            int id = x + y * board.Width;
+        public void InstantiateCell()
+        {
+            int id = X + Y * board.Width;
 
             CellImage = new System.Windows.Controls.Image();
 
@@ -51,7 +44,7 @@ namespace Twitch_Plays_Minesweeper
             CellImage.Width = board.CellSize;
             CellImage.Height = board.CellSize;
 
-            CellImage.Margin = new Thickness(x * board.CellSize + board.OffsetX, y * board.CellSize + board.OffsetY, 0, 0);
+            CellImage.Margin = new Thickness(X * board.CellSize + board.OffsetX, Y * board.CellSize + board.OffsetY, 0, 0);
         }
 
         public bool Click()
@@ -64,7 +57,7 @@ namespace Twitch_Plays_Minesweeper
 
                     board.ShowEverything();
 
-                    MainWindow.GetInstance().Twitch.GameOver();
+                    //MainWindow.GetInstance().Twitch.GameOver();
                 }
                 else if (state == State.BOMBS[0])
                 {
@@ -107,10 +100,11 @@ namespace Twitch_Plays_Minesweeper
             prevState = showState;
             showState = state;
 
-            if (IsHovering)
+            if (isHovering)
             {
                 CellImage.Source = state.GetHoverImage();
-            } else
+            }
+            else
             {
                 CellImage.Source = state.GetImage();
             }
@@ -118,12 +112,13 @@ namespace Twitch_Plays_Minesweeper
 
         public void Show()
         {
-            IsHovering = false;
+            isHovering = false;
 
             if (!IsBomb)
             {
                 SetState(State.BOMBS[NextTo]);
-            } else
+            }
+            else
             {
                 //Show bomb
 
@@ -134,13 +129,13 @@ namespace Twitch_Plays_Minesweeper
         public void NextToBomb()
         {
             NextTo++;
-            
+
             state = State.BOMBS[NextTo];
         }
 
         public void Hover(bool hovering)
         {
-            IsHovering = hovering;
+            isHovering = hovering;
 
             SetState(showState);
         }
@@ -149,7 +144,7 @@ namespace Twitch_Plays_Minesweeper
         {
             return showState.Clickable;
         }
-        
+
         public State GetState()
         {
             return state;
@@ -182,7 +177,7 @@ namespace Twitch_Plays_Minesweeper
                 new State { ImageSrc = "Tile_7", Clickable = false },
                 new State { ImageSrc = "Tile_8", Clickable = false }
             };
-            
+
             private string ImageSrc { get; set; }
             private string HoverImageSrc { get; set; }
 
@@ -190,8 +185,6 @@ namespace Twitch_Plays_Minesweeper
 
             public ImageSource GetImage()
             {
-                //pack://siteoforigin:,,,/Resources/Tile_Original.png
-
                 return new BitmapImage(new Uri("pack://application:,,,/Resources/" + ImageSrc + ".png"));
             }
 

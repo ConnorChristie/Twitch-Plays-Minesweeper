@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
+using TPM.Logic.Game;
 using Twitch_Plays_Minesweeper.Game;
 using Twitch_Plays_Minesweeper_WPF.Twitch;
 
@@ -21,7 +22,7 @@ namespace Twitch_Plays_Minesweeper.Twitch
 
         private StringCollection Voted = new StringCollection();
 
-        private Dictionary<string, MainGame.Action> Actions = new Dictionary<string, MainGame.Action>();
+        private Dictionary<string, Action> Actions = new Dictionary<string, Action>();
 
         public MainTwitch(MainGame game, Voting voting)
         {
@@ -51,7 +52,7 @@ namespace Twitch_Plays_Minesweeper.Twitch
 
             if (acts.Count() > 0)
             {
-                MainGame.Action action = acts.First().Value;
+                Action action = acts.First().Value;
                 
                 SynchronizationContext.Current.Send(_ => voting.AddVote(action), null);
             }
@@ -64,22 +65,22 @@ namespace Twitch_Plays_Minesweeper.Twitch
 
         private void AddActions()
         {
-            Actions.Add("up", MainGame.Action.UP);
-            Actions.Add("down", MainGame.Action.DOWN);
-            Actions.Add("left", MainGame.Action.LEFT);
-            Actions.Add("right", MainGame.Action.RIGHT);
+            Actions.Add("up", Action.UP);
+            Actions.Add("down", Action.DOWN);
+            Actions.Add("left", Action.LEFT);
+            Actions.Add("right", Action.RIGHT);
 
-            Actions.Add("up left", MainGame.Action.UP_LEFT);
-            Actions.Add("up right", MainGame.Action.UP_RIGHT);
-            Actions.Add("down left", MainGame.Action.DOWN_LEFT);
-            Actions.Add("down right", MainGame.Action.DOWN_RIGHT);
+            Actions.Add("up left", Action.UP_LEFT);
+            Actions.Add("up right", Action.UP_RIGHT);
+            Actions.Add("down left", Action.DOWN_LEFT);
+            Actions.Add("down right", Action.DOWN_RIGHT);
 
-            Actions.Add("next", MainGame.Action.NEXT);
+            Actions.Add("next", Action.NEXT);
 
-            Actions.Add("click", MainGame.Action.CLICK);
-            Actions.Add("flag", MainGame.Action.FLAG);
-            Actions.Add("question", MainGame.Action.QUESTION);
-            Actions.Add("untouched", MainGame.Action.UNTOUCHED);
+            Actions.Add("click", Action.CLICK);
+            Actions.Add("flag", Action.FLAG);
+            Actions.Add("question", Action.QUESTION);
+            Actions.Add("untouched", Action.UNTOUCHED);
         }
     }
 }
