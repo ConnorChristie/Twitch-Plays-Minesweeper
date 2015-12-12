@@ -1,0 +1,19 @@
+﻿<Window x:Class="Twitch_Plays_Minesweeper_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Twitch_Plays_Minesweeper_WPF"
+        mc:Ignorable="d"
+        Title="Twitch Plays Minesweeper" Height="1091.46" Width="1285.666" WindowState="Maximized" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <Grid x:Name="CellHolder" HorizontalAlignment="Left" Width="773" Background="Gray"/>
+        <Grid Height="1060" HorizontalAlignment="Right" VerticalAlignment="Top" Width="390">
+            <Grid x:Name="votingPanel" HorizontalAlignment="Left" Height="453" Margin="10,179,0,0" VerticalAlignment="Top" Width="254"/>
+            <Label x:Name="label" Content="Twitch Plays" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="254" FontSize="33.333" FontWeight="Bold" HorizontalContentAlignment="Center" Padding="0"/>
+            <Label x:Name="label_Copy" Content="Minesweeper" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Width="254" FontSize="33.333" FontWeight="Bold" HorizontalContentAlignment="Center" Padding="0"/>
+            <Label x:Name="playedForCounter" Content="0 days, 0 hours, 0 mins" HorizontalAlignment="Left" Margin="0,92,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.421,-0.865" Width="274" FontSize="20" FontWeight="Bold" Height="49" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Label x:Name="countdown" Content="30 seconds" HorizontalAlignment="Left" Margin="0,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.421,-0.865" Width="274" FontSize="20" FontWeight="Bold" Height="38" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>
