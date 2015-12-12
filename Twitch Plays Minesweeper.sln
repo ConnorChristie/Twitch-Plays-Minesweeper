@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPM.Win", "Twitch Plays Min
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSharp", "ChatSharp\ChatSharp.csproj", "{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPM.Test", "TPM.Test\TPM.Test.csproj", "{9C1D8136-6A3D-4D4C-B038-C4B6E89EC528}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4033AFFA-BEA3-4BDF-84EA-59A23360FD36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C1D8136-6A3D-4D4C-B038-C4B6E89EC528}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C1D8136-6A3D-4D4C-B038-C4B6E89EC528}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C1D8136-6A3D-4D4C-B038-C4B6E89EC528}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C1D8136-6A3D-4D4C-B038-C4B6E89EC528}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
