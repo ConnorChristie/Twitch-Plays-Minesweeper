@@ -16,16 +16,7 @@ namespace TPM.Logic.Game
         {
             Title = "Up",
             GamePlay = true,
-            Key = Key.UP,
-            Act = board =>
-            {
-                Cell cell = null;
-
-                for (int i = board.CursorPos.Y - 1; i >= 0; i--)
-                    if (board.GetCellRelativeTo(board.CursorPos.X, i, out cell)) return cell;
-
-                return null;
-            }
+            Key = Key.UP
         };
         public static Action DOWN = new Action
         {
@@ -104,7 +95,5 @@ namespace TPM.Logic.Game
         public bool GamePlay { get; private set; }
 
         public Key Key { get; private set; }
-
-        public System.Func<Board, Cell> Act { get; private set; }
     }
 }

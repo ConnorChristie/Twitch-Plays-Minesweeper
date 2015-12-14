@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Timers;
 using System.Windows.Controls;
 using TPM.Logic.Game;
-using Twitch_Plays_Minesweeper.Game;
 
-namespace Twitch_Plays_Minesweeper_WPF.Twitch
+namespace TPM.Logic.Twitch
 {
     public class Voting
     {
-        private Timer timer;
+        private System.Timers.Timer timer;
         private MainGame game;
 
         private int countdownTime = 30;
@@ -20,11 +20,13 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
         private Panel votingPanel;
         private Label countdownLabel;
 
-        private Dictionary<Action, Votes> votes = new Dictionary<Action, Votes>();
+        private Dictionary<VotingAction, Votes> votes = new Dictionary<VotingAction, Votes>();
+
+        private SynchronizationContext synchronizationContext;
 
         public Voting(MainGame game, Panel votingPanel, Label countdownLabel)
         {
-            timer = new Timer();
+            timer = new System.Timers.Timer();
 
             timer.Interval = 1000;
             timer.Elapsed += Timer_Elapsed;
@@ -33,18 +35,21 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
             this.game = game;
             this.votingPanel = votingPanel;
             this.countdownLabel = countdownLabel;
+
+            synchronizationContext = SynchronizationContext.Current;
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            MainWindow.synchronizationContext.Send(_ => UpdateCountdownLabel(), null);
-            
+            synchronizationContext.Send(_ => UpdateCountdownLabel(), null);
+
             if (countdownTimer <= 0)
             {
-                MainWindow.synchronizationContext.Send(_ => CommitAction(), null);
+                synchronizationContext.Send(_ => CommitAction(), null);
 
                 countdownTimer = countdownTime;
-            } else
+            }
+            else
             {
                 countdownTimer--;
             }
@@ -55,20 +60,22 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
             countdownLabel.Content = string.Format("{0} second{1}", countdownTimer, countdownTimer == 1 ? "" : "s");
         }
 
-        public void AddVote(Action action)
+        public void AddVote(VotingAction action)
         {
             var vote = from v in votes
-                       where v.Key == action
+                       where v.Key.Action == action.Action
                        select v;
 
             if (vote.Count() > 0)
             {
-                KeyValuePair<Action, Votes> actVote = vote.First();
+                var actVote = vote.First();
 
-                actVote.Value.AddVote();
+                actVote.Key.Count = (actVote.Key.Count + action.Count) / 2;
+                actVote.Value.AddVote(action);
 
                 DisplaySortedVotes();
-            } else
+            }
+            else
             {
                 Votes aVote = new Votes(votes.Count(), action);
 
@@ -86,13 +93,13 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
 
             int index = 0;
 
-            foreach (KeyValuePair<Action, Votes> vote in sorted)
+            foreach (KeyValuePair<VotingAction, Votes> vote in sorted)
             {
                 vote.Value.AddToPanel(votingPanel, index++);
             }
         }
 
-        private IOrderedEnumerable<KeyValuePair<Action, Votes>> GetSortedVotes()
+        private IOrderedEnumerable<KeyValuePair<VotingAction, Votes>> GetSortedVotes()
         {
             var sorted = from v in votes
                          orderby v.Value._Votes descending
@@ -111,5 +118,12 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
                 votes.Clear();
             }
         }
+    }
+
+    public class VotingAction
+    {
+        public Action Action { get; set; }
+
+        public int Count { get; set; }
     }
 }

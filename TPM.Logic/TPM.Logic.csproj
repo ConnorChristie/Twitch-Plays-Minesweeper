@@ -48,10 +48,17 @@
     <Compile Include="Game\Cell.cs" />
     <Compile Include="Game\Difficulty.cs" />
     <Compile Include="Game\Key.cs" />
+    <Compile Include="MainGame.cs" />
+    <Compile Include="MainTwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Twitch\Votes.cs" />
+    <Compile Include="Twitch\Voting.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Twitch\" />
+    <ProjectReference Include="..\ChatSharp\ChatSharp.csproj">
+      <Project>{4033affa-bea3-4bdf-84ea-59a23360fd36}</Project>
+      <Name>ChatSharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

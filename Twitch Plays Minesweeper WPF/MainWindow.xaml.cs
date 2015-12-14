@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Timers;
 using System.Windows;
-using Twitch_Plays_Minesweeper.Game;
-using Twitch_Plays_Minesweeper.Twitch;
-using Twitch_Plays_Minesweeper_WPF.Twitch;
+using TPM.Logic;
+using TPM.Logic.Twitch;
 
 namespace Twitch_Plays_Minesweeper_WPF
 {
@@ -18,7 +17,7 @@ namespace Twitch_Plays_Minesweeper_WPF
         public MainGame Game { get; private set; }
         public MainTwitch Twitch { get; private set; }
 
-        public static SynchronizationContext synchronizationContext;
+        private SynchronizationContext synchronizationContext;
 
         public MainWindow()
         {

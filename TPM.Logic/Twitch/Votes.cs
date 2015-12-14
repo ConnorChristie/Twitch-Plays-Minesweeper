@@ -1,11 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using TPM.Logic.Game;
-using Twitch_Plays_Minesweeper.Game;
 
-namespace Twitch_Plays_Minesweeper_WPF.Twitch
+namespace TPM.Logic.Twitch
 {
-    class Votes
+    public class Votes
     {
         private int index = 0;
 
@@ -14,18 +12,19 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
 
         public int _Votes { get; private set; }
 
-        public Votes(int index, Action action)
+        public Votes(int index, VotingAction action)
         {
-            Label[] labels = GetVoteLabels(this.index = index, action.Title, 1);
+            Label[] labels = GetVoteLabels(this.index = index, action, 1);
 
             titleLabel = labels[0];
             valueLabel = labels[1];
         }
 
-        internal void AddVote()
+        internal void AddVote(VotingAction action)
         {
             _Votes++;
 
+            titleLabel.Content = action.Action.Title + "" + action.Count;
             valueLabel.Content = (int)valueLabel.Content + 1;
         }
 
@@ -48,12 +47,12 @@ namespace Twitch_Plays_Minesweeper_WPF.Twitch
             valueLabel.Margin = new Thickness(171, 10 + (index * 40), 0, 0);
         }
 
-        private Label[] GetVoteLabels(int index, string name, int value)
+        private Label[] GetVoteLabels(int index, VotingAction action, int value)
         {
             Label nameLabel = new Label();
             Label valueLabel = new Label();
 
-            nameLabel.Content = name;
+            nameLabel.Content = action.Action.Title + "" + action.Count;
             nameLabel.HorizontalAlignment = HorizontalAlignment.Left;
             nameLabel.VerticalAlignment = VerticalAlignment.Top;
             nameLabel.Margin = new Thickness(10, 10 + (index * 40), 0, 0);

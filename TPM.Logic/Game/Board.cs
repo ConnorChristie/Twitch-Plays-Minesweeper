@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Controls;
+using TPM.Logic.Twitch;
 
 namespace TPM.Logic.Game
 {
     public class Board
     {
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public Difficulty Difficulty { get; set; }
+
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         public Grid CellGrid { get; set; }
         public Point CursorPos { get; private set; }
 
-        public double CellSize { get; set; }
+        public double CellSize { get; private set; }
 
         public int OffsetX = 1;
         public int OffsetY = 1;
@@ -26,6 +29,11 @@ namespace TPM.Logic.Game
 
         public void CreateBoard()
         {
+            Width = Difficulty.Width;
+            Height = Difficulty.Height;
+
+            CellSize = Difficulty.GetCellSize();
+
             cells = new Cell[Width, Height];
 
             CursorPos = new Point(0, 0);
@@ -178,11 +186,11 @@ namespace TPM.Logic.Game
             return false;
         }
 
-        public void MoveCursor(Action key)
+        public void MoveCursor(VotingAction key)
         {
             Cell cell = null;
 
-            switch (key.Key)
+            switch (key.Action.Key)
             {
                 case Key.NEXT:
                     int refX = CursorPos.X;
@@ -205,7 +213,8 @@ namespace TPM.Logic.Game
 
                     Finished: break;
                 case Key.UP:
-                    cell = key.Act.Invoke(this);
+                    for (int i = CursorPos.Y - 1; i >= 0; i++)
+                        if (GetCellRelativeTo(CursorPos.X, i, out cell)) break;
 
                     break;
                 case Key.DOWN:
@@ -265,7 +274,7 @@ namespace TPM.Logic.Game
                 {
                     //Move to next available cell
 
-                    MoveCursor(Action.NEXT);
+                    MoveCursor(new VotingAction() { Action = Action.NEXT, Count = -1 });
                 }
             }
         }

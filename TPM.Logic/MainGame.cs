@@ -1,23 +1,23 @@
 ﻿using System.Windows.Controls;
 using TPM.Logic.Game;
+using TPM.Logic.Twitch;
 
-namespace Twitch_Plays_Minesweeper.Game
+namespace TPM.Logic
 {
     public class MainGame
     {
         private Board board;
 
         private Difficulty difficulty = Difficulty.MEDIUM;
-        
+
         public MainGame(Grid cellGrid, double Height)
         {
             Difficulty.ScreenHeight = Height;
 
-            board = new Board() {
-                Width = difficulty.Width,
-                Height = difficulty.Height,
-                CellGrid = cellGrid,
-                CellSize = difficulty.GetCellSize()
+            board = new Board()
+            {
+                Difficulty = difficulty,
+                CellGrid = cellGrid
             };
 
             StartGame();
@@ -40,14 +40,14 @@ namespace Twitch_Plays_Minesweeper.Game
             board.MarkCell(flag, normal);
         }
 
-        private void PressedArrowKey(Action key)
+        private void PressedArrowKey(VotingAction key)
         {
             board.MoveCursor(key);
         }
 
-        public void CommitAction(Action action)
+        public void CommitAction(VotingAction action)
         {
-            switch (action.Key)
+            switch (action.Action.Key)
             {
                 case Key.CLICK:
                     ClickCell();
