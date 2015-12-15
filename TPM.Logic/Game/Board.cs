@@ -174,7 +174,7 @@ namespace TPM.Logic.Game
         {
             Cell cell = GetCell(x, y);
 
-            if (cell.IsClickable())
+            if (cell != null && cell.IsClickable())
             {
                 producedCell = cell;
 
@@ -184,6 +184,32 @@ namespace TPM.Logic.Game
             producedCell = null;
 
             return false;
+        }
+
+        public bool CanMoveByCount(Action action, int tryCount)
+        {
+            int tryCountX = 0;
+            int tryCountY = 0;
+
+            switch (action.Key)
+            {
+                case Key.RIGHT:
+                    tryCountX = GetMaxTryCount(tryCount, Width - CursorPos.X);
+                    tryCountY = 0;
+                    
+                    break;
+            }
+
+            Cell cell = null;
+
+            GetCellRelativeTo(tryCountX, tryCountY, out cell);
+            
+            return cell != null;
+        }
+
+        private int GetMaxTryCount(int tryCount, int maxCount)
+        {
+            return tryCount <= maxCount ? tryCount : maxCount;
         }
 
         public void MoveCursor(VotingAction key)
@@ -228,9 +254,13 @@ namespace TPM.Logic.Game
 
                     break;
                 case Key.RIGHT:
+
+                    GetCellRelativeTo(key.Count, CursorPos.Y, out cell);
+
+                    /*
                     for (int i = CursorPos.X + 1; i < Width; i++)
                         if (GetCellRelativeTo(i, CursorPos.Y, out cell)) break;
-
+                        */
                     break;
                 case Key.UP_LEFT:
                     for (int xy = 1; xy < Math.Min(CursorPos.X + 1, CursorPos.Y + 1); xy++)

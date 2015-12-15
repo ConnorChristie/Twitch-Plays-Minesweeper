@@ -19,7 +19,7 @@ namespace TPM.Logic
         private string Username = "MinesweeperByTwitch";
         private string Password = "oauth:qedxefrm0tv5yy54bcyp087idqr22g";
         
-        private Dictionary<string, VotingAction> Actions = new Dictionary<string, VotingAction>();
+        private Dictionary<string, Action> Actions = new Dictionary<string, Action>();
 
         public MainTwitch(MainGame game, Voting voting)
         {
@@ -44,28 +44,34 @@ namespace TPM.Logic
             string[] components = message.Split(' ');
             string possibleCount = components.Last();
 
-            int count = -1;
+            int count = 1;
+            int tryCount = 1;
 
-            if (int.TryParse(possibleCount, out count))
+            if (int.TryParse(possibleCount, out tryCount))
             {
-                components.
+                components = components.Where((source, index) => index != components.Count() - 1).ToArray();
 
                 message = string.Join(" ", components);
+
+                count = tryCount;
             }
-
-            System.Console.WriteLine("Message: " + message);
-
+            
             var acts = from a in Actions
                        where a.Key.Equals(message.ToLower())
                        select a;
 
             if (acts.Count() > 0)
             {
-                VotingAction action = acts.First().Value;
-                
-                action.Count = count;
+                var action = acts.First().Value;
 
-                SynchronizationContext.Current.Send(_ => voting.AddVote(action), null);
+                System.Console.WriteLine("Count: " + count);
+
+                if (game.Board.CanMoveByCount(action, count))
+                {
+                    var votingAction = new VotingAction() { Action = action, Count = count };
+
+                    SynchronizationContext.Current.Send(_ => voting.AddVote(votingAction), null);
+                }
             }
         }
 
@@ -76,22 +82,22 @@ namespace TPM.Logic
 
         private void AddActions()
         {
-            Actions.Add("up", new VotingAction() { Action = Action.UP });
-            Actions.Add("down", new VotingAction() { Action = Action.DOWN });
-            Actions.Add("left", new VotingAction() { Action = Action.LEFT });
-            Actions.Add("right", new VotingAction() { Action = Action.RIGHT });
+            Actions.Add("up", Action.UP);
+            Actions.Add("down", Action.DOWN);
+            Actions.Add("left", Action.LEFT);
+            Actions.Add("right", Action.RIGHT);
 
-            Actions.Add("up left", new VotingAction() { Action = Action.UP_LEFT });
-            Actions.Add("up right", new VotingAction() { Action = Action.UP_RIGHT });
-            Actions.Add("down left", new VotingAction() { Action = Action.DOWN_LEFT });
-            Actions.Add("down right", new VotingAction() { Action = Action.DOWN_RIGHT });
+            Actions.Add("up left", Action.UP_LEFT);
+            Actions.Add("up right", Action.UP_RIGHT);
+            Actions.Add("down left", Action.DOWN_LEFT);
+            Actions.Add("down right", Action.DOWN_RIGHT);
 
-            Actions.Add("next", new VotingAction() { Action = Action.NEXT });
+            Actions.Add("next", Action.NEXT);
 
-            Actions.Add("click", new VotingAction() { Action = Action.CLICK });
-            Actions.Add("flag", new VotingAction() { Action = Action.FLAG });
-            Actions.Add("question", new VotingAction() { Action = Action.QUESTION });
-            Actions.Add("untouched", new VotingAction() { Action = Action.UNTOUCHED });
+            Actions.Add("click", Action.CLICK);
+            Actions.Add("flag", Action.FLAG);
+            Actions.Add("question", Action.QUESTION);
+            Actions.Add("untouched", Action.UNTOUCHED);
         }
     }
 }

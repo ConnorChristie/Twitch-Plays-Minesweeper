@@ -14,18 +14,14 @@ namespace TPM.Logic.Twitch
 
         public Votes(int index, VotingAction action)
         {
-            Label[] labels = GetVoteLabels(this.index = index, action, 1);
-
-            titleLabel = labels[0];
-            valueLabel = labels[1];
+            SetupVoteLabels(this.index = index, action, 1);
         }
 
         internal void AddVote(VotingAction action)
         {
             _Votes++;
-
-            titleLabel.Content = action.Action.Title + "" + action.Count;
-            valueLabel.Content = (int)valueLabel.Content + 1;
+            
+            SetLabelsText(action.Action.Title, action.Count, _Votes);
         }
 
         internal void AddToPanel(Panel panel)
@@ -47,21 +43,25 @@ namespace TPM.Logic.Twitch
             valueLabel.Margin = new Thickness(171, 10 + (index * 40), 0, 0);
         }
 
-        private Label[] GetVoteLabels(int index, VotingAction action, int value)
+        private void SetLabelsText(string title, int count, int value)
         {
-            Label nameLabel = new Label();
-            Label valueLabel = new Label();
-
-            nameLabel.Content = action.Action.Title + "" + action.Count;
-            nameLabel.HorizontalAlignment = HorizontalAlignment.Left;
-            nameLabel.VerticalAlignment = VerticalAlignment.Top;
-            nameLabel.Margin = new Thickness(10, 10 + (index * 40), 0, 0);
-            nameLabel.Width = 156;
-            nameLabel.FontWeight = FontWeights.Bold;
-            nameLabel.FontSize = 26.667;
-            nameLabel.Padding = new Thickness(0);
-
+            titleLabel.Content = string.Format("{0}: {1}", title, count);
             valueLabel.Content = value;
+        }
+
+        private void SetupVoteLabels(int index, VotingAction action, int value)
+        {
+            titleLabel = new Label();
+            valueLabel = new Label();
+
+            titleLabel.HorizontalAlignment = HorizontalAlignment.Left;
+            titleLabel.VerticalAlignment = VerticalAlignment.Top;
+            titleLabel.Margin = new Thickness(10, 10 + (index * 40), 0, 0);
+            titleLabel.Width = 156;
+            titleLabel.FontWeight = FontWeights.Bold;
+            titleLabel.FontSize = 26.667;
+            titleLabel.Padding = new Thickness(0);
+            
             valueLabel.HorizontalAlignment = HorizontalAlignment.Left;
             valueLabel.VerticalAlignment = VerticalAlignment.Top;
             valueLabel.HorizontalContentAlignment = HorizontalAlignment.Right;
@@ -71,7 +71,7 @@ namespace TPM.Logic.Twitch
             valueLabel.FontSize = 26.667;
             valueLabel.Padding = new Thickness(0);
 
-            return new Label[] { nameLabel, valueLabel };
+            SetLabelsText(action.Action.Title, action.Count, value);
         }
     }
 }

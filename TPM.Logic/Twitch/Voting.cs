@@ -70,7 +70,7 @@ namespace TPM.Logic.Twitch
             {
                 var actVote = vote.First();
 
-                actVote.Key.Count = (actVote.Key.Count + action.Count) / 2;
+                action.Count = (actVote.Key.Count + action.Count) / 2;
                 actVote.Value.AddVote(action);
 
                 DisplaySortedVotes();

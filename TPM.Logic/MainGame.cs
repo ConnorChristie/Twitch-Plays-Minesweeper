@@ -6,7 +6,7 @@ namespace TPM.Logic
 {
     public class MainGame
     {
-        private Board board;
+        public Board Board { get; private set; }
 
         private Difficulty difficulty = Difficulty.MEDIUM;
 
@@ -14,7 +14,7 @@ namespace TPM.Logic
         {
             Difficulty.ScreenHeight = Height;
 
-            board = new Board()
+            Board = new Board()
             {
                 Difficulty = difficulty,
                 CellGrid = cellGrid
@@ -25,24 +25,24 @@ namespace TPM.Logic
 
         private void StartGame()
         {
-            board.CreateBoard();
+            Board.CreateBoard();
 
-            board.PopulateBombs(difficulty.Bombs);
+            Board.PopulateBombs(difficulty.Bombs);
         }
 
         private void ClickCell()
         {
-            board.ClickCell();
+            Board.ClickCell();
         }
 
         private void MarkCell(bool flag, bool normal)
         {
-            board.MarkCell(flag, normal);
+            Board.MarkCell(flag, normal);
         }
 
         private void PressedArrowKey(VotingAction key)
         {
-            board.MoveCursor(key);
+            Board.MoveCursor(key);
         }
 
         public void CommitAction(VotingAction action)
